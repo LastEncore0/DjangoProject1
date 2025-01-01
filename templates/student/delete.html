@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+</head>
+<body>
+<h3>{{ title }}</h3>
+<form method="post">
+    {% csrf_token %}
+    您確定要消滅id:{{ student.id }} name:{{ student.name }} age:{{ student.age }}<br>
+    <input type="submit" value="刪！">
+</form>
+</body>
+</html>

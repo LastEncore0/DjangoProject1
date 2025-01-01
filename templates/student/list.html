@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+</head>
+<body>
+<h3>{{ title }}</h3>
+<a href="/student/create">新增學生</a>
+<table border="1">
+    <tr>
+        <th>編號</th>
+        <th>姓名</th>
+        <th>年齡</th>
+        <th>操作</th>
+    </tr>
+    <tr>
+        {% for student in student_list %}
+            <tr>
+                <td>{{ student.id }}</td>
+                <td>{{ student.name }}</td>
+                <td>{{ student.age }}</td>
+                <td>
+                    <a href="/student/{{ student.id }}">查看詳情</a>
+                    <a href="/student/update/{{ student.id }}">修改</a>
+                    <a href="/student/delete/{{ student.id }}">刪除</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tr>
+</table>
+<br>
+{% if is_paginated %}
+    {% if page_obj.has_previous %}
+        <a href="/student/list?page={{ page_obj.previous_page_number }}">上一頁</a>
+    {% endif %}
+    {% for current in paginator.page_range %}
+        {% if current == page_obj.number %}
+            <a href="/student/list?page={{ current }}"><b><font color="blue">{{ current }}</font></b></a>
+            {% else %}
+            <a href="/student/list?page={{ current }}">{{ current }}</a>
+        {% endif %}
+    {% endfor %}
+    {% if page_obj.has_next %}
+        <a href="/student/list?page={{ page_obj.next_page_number }}">下一頁</a>
+    {% endif %}
+{% endif %}
+</body>
+</html>
