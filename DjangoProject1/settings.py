@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'HelloWorld.apps.HelloworldConfig'
+    'HelloWorld.apps.HelloworldConfig',
+    'user.apps.UserConfig',
+    'order.apps.OrderConfig'
 ]
 
 MIDDLEWARE = [
@@ -122,9 +124,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = 's1/'
 
-STATICFILES_DIRS = [BASE_DIR / "static", BASE_DIR / "HelloWorld/image"]
+STATICFILES_DIRS = [BASE_DIR / "static", BASE_DIR / "HelloWorld/image", BASE_DIR / "common"]
 
 # 设置媒体路由
 MEDIA_URL = 'media/'
