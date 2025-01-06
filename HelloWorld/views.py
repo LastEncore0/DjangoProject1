@@ -1,4 +1,5 @@
 import os
+import datetime
 
 from django.http import HttpResponse, StreamingHttpResponse, FileResponse
 from django.shortcuts import render, redirect
@@ -8,10 +9,26 @@ from HelloWorld.forms import StudentForm
 from HelloWorld.models import StudentInfo
 
 
+
+class Person:
+    name = None
+    age = None
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
 # Create your views here.
 def index(request):
     print("request.GET")
-    return render(request,'http.html')
+    str = "hello world"
+    date = datetime.datetime.now()
+    baka0 = Person("baka0", 18)
+    myDict = {"tom": '666', 'cat': '999', 'wzw': '333'}
+    myList = [1,2,3,4,5]
+    myTuple = (10,"原p",3.14,40,False)
+    context_value = {"msg":str, "msg2":myDict, "msg3":baka0, "msg4":myList, "msg5":myTuple, "date":date}
+
+    return render(request,'index2.html', context=context_value)
 def blog(request, id):
     if id == 0:
         return redirect("/s1/error.html")
@@ -133,3 +150,6 @@ class Delete(DeleteView):
     model = StudentInfo
     context_object_name = "student"
     success_url = "/student/list"
+
+def to_course(request):
+    return render(request, 'course.html')

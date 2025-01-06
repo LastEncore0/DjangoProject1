@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>
+        {% block title %}
+            Based
+        {% endblock %}
+    </title>
+</head>
+{% load static %}
+<body>
+<div id="head">
+    <img src="{% static 'hikari.png'%}" alt="">
+</div>
+<div id="content">
+    {% block content %}
+        Welcome to academe!
+    {% endblock %}
+</div>
+<div id="footer">
+    Copyright 2025
+</div>
+</body>
+</html>

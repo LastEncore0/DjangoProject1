@@ -24,13 +24,14 @@ from DjangoProject1 import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('index/', HelloWorld.views.index),
+    path('index/', HelloWorld.views.index, name='index'),
     path('download1/', HelloWorld.views.download_file1),
     path('download2/', HelloWorld.views.download_file2),
     path('download3/', HelloWorld.views.download_file3),
     path('get', HelloWorld.views.get_test),
     path('post', HelloWorld.views.post_test),
     path('tologin/', HelloWorld.views.to_login),
+    path('tocourse/', HelloWorld.views.to_course),
     path('login', HelloWorld.views.login),
     path('toupload/', HelloWorld.views.to_upload),
     path('upload', HelloWorld.views.upload),

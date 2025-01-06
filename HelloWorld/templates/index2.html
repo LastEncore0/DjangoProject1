@@ -5,6 +5,38 @@
     <title>Title</title>
 </head>
 <body>
-in HelloWorld
+字符串: {{ msg }}<br>
+字典: {{ msg2.tom }},{{ msg2.cat }}<br>
+對象: {{ msg3.name }},{{ msg3.age }}<br>
+list: {{ msg4.0 }},{{ msg4.1 }}<br>
+Tuple: {{ msg5.2 }},{{ msg5.1 }}<br>
+<h3>模板標簽</h3>
+<p>遍歷for標簽</p>
+{% for item in msg5 %}
+    <p>第{{ forloop.counter }}次</p>
+    {{ item }}<br>
+{%  endfor %}
+<p>if標簽</p>
+{% if msg == "模板" %}
+    <p>模板</p>
+{% else %}
+    <p>其他</p>
+{% endif %}
+<p>url tag</p>
+<a href="{% url 'index' %}" target="_blank">Request index</a>
+<p>with</p>
+{% with info=msg %}
+    {{ info }}
+{% endwith %}
+<p>内置過濾器</p>
+capfirst: {{ msg|capfirst }}<br>
+length: {{ msg|length }}<br>
+lower: {{ msg|lower }}<br>
+upper: {{ msg|upper }}<br>
+title: {{ msg|title }}<br>
+truncatewords: {{ msg|truncatewords:2 }}<br>
+truncatechars: {{ msg|truncatechars:2 }}<br>
+linebreaks: {{ msg|linebreaks }}<br>
+date: {{ date }} ->> {{ date | date:'Y-m-d H:i:s' }}
 </body>
 </html>
