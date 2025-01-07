@@ -56,6 +56,15 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'DjangoProject1.urls'
 
 TEMPLATES = [
+    # {
+    #     'BACKEND': 'django.template.backends.jinja2.Jinja2',
+    #     'DIRS': [BASE_DIR / 'templates']
+    #      ,
+    #     'APP_DIRS': True,
+    #      'OPTIONS': {
+    #      'environment': 'helloWorld.Jinja3.environment'
+    #      },
+    # },
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [BASE_DIR / 'templates',BASE_DIR /'HelloWorld/templates']

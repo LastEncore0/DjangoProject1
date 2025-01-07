@@ -8,3 +8,22 @@ class StudentInfo(models.Model):
 
     class Meta:
         db_table = 't_student'
+
+class BookTypeInfo(models.Model):
+    id = models.AutoField(primary_key=True)
+    bookTypeName = models.CharField(max_length=20)
+
+    class Meta:
+        db_table = 't_booktype'
+        verbose_name="圖書類別信息"
+
+class BookInfo(models.Model):
+    id = models.AutoField(primary_key=True)
+    bookName = models.CharField(max_length=20)
+    publishDate = models.DateField()
+    price = models.FloatField()
+    bookType = models.ForeignKey(BookTypeInfo, on_delete=models.Prefetch)
+
+    class Meta:
+        db_table = 't_book'
+        verbose_name = "圖書信息"
