@@ -1,12 +1,13 @@
 import os
 import datetime
 
+from django.db.models import Sum
 from django.http import HttpResponse, StreamingHttpResponse, FileResponse
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from HelloWorld.forms import StudentForm
-from HelloWorld.models import StudentInfo
+from HelloWorld.models import StudentInfo, BookInfo
 
 
 
@@ -153,3 +154,14 @@ class Delete(DeleteView):
 
 def to_course(request):
     return render(request, 'course.html')
+
+def bookList(request):
+    bookList = BookInfo.objects.all()
+    # t = BookInfo.objects.filter(id=2).count()
+    # print(t)
+    booklist = BookInfo.objects.order_by("-id")
+    print(booklist)
+    r = BookInfo.objects.values("bookType").annotate(Sum("price"))
+    print(r)
+    context_value = {"title" : "圖書列表" ,"bookList":bookList}
+    return render(request, 'book/List.html', context=context_value)

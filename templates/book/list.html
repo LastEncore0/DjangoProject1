@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+</head>
+<body>
+<h3>{{ title }}</h3>
+<table border="1">
+    <tr>
+        <th>编号</th>
+        <th>图书名称</th>
+        <th>价格</th>
+        <th>出版日期</th>
+        <th>图书类别</th>
+    </tr>
+    {% for book in bookList %}
+        <tr>
+            <td>{{ book.id }}</td>
+            <td>{{ book.bookName }}</td>
+            <td>{{ book.price }}</td>
+            <td>{{ book.publishDate | date:"Y-m-d"}}</td>
+            <td>{{ book.bookType.bookTypeName }}</td>
+        </tr>
+    {% endfor %}
+</table>
+</body>
+</html>

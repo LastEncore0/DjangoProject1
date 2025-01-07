@@ -32,6 +32,7 @@ urlpatterns = [
     path('post', HelloWorld.views.post_test),
     path('tologin/', HelloWorld.views.to_login),
     path('tocourse/', HelloWorld.views.to_course),
+    path('book/list', HelloWorld.views.bookList),
     path('login', HelloWorld.views.login),
     path('toupload/', HelloWorld.views.to_upload),
     path('upload', HelloWorld.views.upload),
