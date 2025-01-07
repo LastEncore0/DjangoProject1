@@ -1,6 +1,7 @@
 import os
 import datetime
 
+from django.core.paginator import Paginator
 from django.db.models import Sum
 from django.http import HttpResponse, StreamingHttpResponse, FileResponse
 from django.shortcuts import render, redirect
@@ -159,9 +160,12 @@ def bookList(request):
     bookList = BookInfo.objects.all()
     # t = BookInfo.objects.filter(id=2).count()
     # print(t)
-    booklist = BookInfo.objects.order_by("-id")
-    print(booklist)
-    r = BookInfo.objects.values("bookType").annotate(Sum("price"))
-    print(r)
+    # booklist = BookInfo.objects.order_by("-id")
+    # print(booklist)
+    # r = BookInfo.objects.values("bookType").annotate(Sum("price"))
+    # print(r)
+    p = Paginator(bookList,2)
+    bookListPage = p.page(1)
+    print("縂記錄數" ,BookInfo.objects.count())
     context_value = {"title" : "圖書列表" ,"bookList":bookList}
     return render(request, 'book/List.html', context=context_value)
