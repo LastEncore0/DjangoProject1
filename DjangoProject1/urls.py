@@ -35,6 +35,8 @@ urlpatterns = [
     path('book/list', HelloWorld.views.bookList),
     path('book/list2', HelloWorld.views.bookList2),
     path('book/preAdd', HelloWorld.views.preAdd),
+    path('book/preAdd2', HelloWorld.views.preAdd2),
+    path('book/preAdd3', HelloWorld.views.preAdd3),
     path('book/add', HelloWorld.views.add),
     path('book/update', HelloWorld.views.update),
     path('book/preUpdate/<int:id>', HelloWorld.views.preUpdate),

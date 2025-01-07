@@ -9,7 +9,7 @@ from django.http import HttpResponse, StreamingHttpResponse, FileResponse
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from HelloWorld.forms import StudentForm
+from HelloWorld.forms import StudentForm, BookInfoForm, BookInfoModelForm
 from HelloWorld.models import StudentInfo, BookInfo, BookTypeInfo, AccountInfo
 
 
@@ -163,7 +163,7 @@ def bookList(request):
     # bookList = BookInfo.objects.raw("select * from t_book where price>%s",params=[10])
     # cursor: CursorDebugWrapper = connection.cursor()
     # cursor.execute("select * from t_book where price>90")
-    print(cursor.fetchone())
+    # print(cursor.fetchone())
     # bookList = BookInfo.objects.extra(where=["price>10"])
     # t = BookInfo.objects.filter(id=2).count()
     # print(t)
@@ -196,6 +196,19 @@ def preAdd(request):
     context_value = {"title" : "圖書添加" ,"bookTypeList":bookTypeList}
     return render(request, "book/add.html", context_value)
 
+def preAdd2(request):
+    form = BookInfoForm()
+
+    context_value = {"title" : "圖書添加2" ,"form": form}
+    return render(request, "book/add2.html", context_value)
+
+def preAdd3(request):
+    form = BookInfoModelForm()
+
+    context_value = {"title": "圖書添加3", "form": form}
+    return render(request, "book/add2.html", context_value)
+
+
 def preUpdate(request,id):
     print("id:",id)
     book = BookInfo.objects.get(id=id)
@@ -215,7 +228,7 @@ def add(request):
     book.bookName = request.POST.get("bookName")
     book.price = request.POST.get("price")
     book.publishDate = request.POST.get("publishDate")
-    book.bookType_id = request.POST.get("bookType_id")
+    book.bookType_id = request.POST.get("bookType")
     book.save()
     print("id:",book.id)
     return bookList(request)
