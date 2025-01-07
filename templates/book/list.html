@@ -6,6 +6,7 @@
 </head>
 <body>
 <h3>{{ title }}</h3>
+<a href="/book/preAdd">添加</a><br/><br/>
 <table border="1">
     <tr>
         <th>编号</th>
@@ -13,6 +14,7 @@
         <th>价格</th>
         <th>出版日期</th>
         <th>图书类别</th>
+        <th>操作</th>
     </tr>
     {% for book in bookList %}
         <tr>
@@ -21,6 +23,10 @@
             <td>{{ book.price }}</td>
             <td>{{ book.publishDate | date:"Y-m-d"}}</td>
             <td>{{ book.bookType.bookTypeName }}</td>
+            <td>
+                <a href="/book/preUpdate/{{ book.id }}">修改</a>
+                <a href="/book/delete/{{ book.id }}">刪除</a>
+            </td>
         </tr>
     {% endfor %}
 </table>

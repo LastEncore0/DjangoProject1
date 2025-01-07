@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+</head>
+<body>
+<h3>{{ title }}</h3>
+<form action="/book/update" method="post">
+{% csrf_token %}
+    <table>
+        <tr>
+            <td>圖書名稱：</td>
+            <td>
+                <input type="text" name="bookName" value="{{ book.bookName }}">
+            </td>
+        </tr>
+        <tr>
+            <td>圖書價格：</td>
+            <td>
+                <input type="text" name="price" value="{{ book.price }}">
+            </td>
+        </tr>
+        <tr>
+            <td>出版日期：</td>
+            <td>
+                <input type="text" name="publishDate" value="{{ book.publishDate | date:'Y-m-d' }}">
+            </td>
+        </tr>
+        <tr>
+            <td>圖書類別：</td>
+            <td>
+                <select name="bookType_id">
+                    {% for bookType in bookTypeList %}
+                        <option value="{{ bookType.id }}"
+                        {% if  book.bookType.id == bookType.id %}
+                        	selected
+                        {% endif %} >{{ bookType.bookTypeName }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="hidden" name="id" value="{{ book.id }}">
+                <input type="submit" value="提交">
+            </td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>

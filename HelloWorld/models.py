@@ -27,3 +27,12 @@ class BookInfo(models.Model):
     class Meta:
         db_table = 't_book'
         verbose_name = "圖書信息"
+
+class AccountInfo(models.Model):
+    id = models.AutoField(primary_key=True)
+    user = models.CharField(max_length=20)
+    account = models.FloatField()
+
+    class Meta:
+        db_table = 't_account'
+        verbose_name = "用戶賬戶信息"

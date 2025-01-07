@@ -2,14 +2,15 @@ import os
 import datetime
 
 from django.core.paginator import Paginator
-from django.db.models import Sum
+from django.db import connection, transaction
+from django.db.backends.utils import CursorDebugWrapper
+from django.db.models import Sum, F
 from django.http import HttpResponse, StreamingHttpResponse, FileResponse
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from HelloWorld.forms import StudentForm
-from HelloWorld.models import StudentInfo, BookInfo
-
+from HelloWorld.models import StudentInfo, BookInfo, BookTypeInfo, AccountInfo
 
 
 class Person:
@@ -158,6 +159,12 @@ def to_course(request):
 
 def bookList(request):
     bookList = BookInfo.objects.all()
+
+    # bookList = BookInfo.objects.raw("select * from t_book where price>%s",params=[10])
+    # cursor: CursorDebugWrapper = connection.cursor()
+    # cursor.execute("select * from t_book where price>90")
+    print(cursor.fetchone())
+    # bookList = BookInfo.objects.extra(where=["price>10"])
     # t = BookInfo.objects.filter(id=2).count()
     # print(t)
     # booklist = BookInfo.objects.order_by("-id")
@@ -169,3 +176,81 @@ def bookList(request):
     print("縂記錄數" ,BookInfo.objects.count())
     context_value = {"title" : "圖書列表" ,"bookList":bookList}
     return render(request, 'book/List.html', context=context_value)
+
+def bookList2(request):
+    #正常查詢
+    book: BookInfo = BookInfo.objects.filter(id=2).first()
+    print(book.bookName, book.bookType.bookTypeName)
+
+    #反向查詢
+    bookType: BookTypeInfo = BookTypeInfo.objects.filter(id=1).first()
+    print(bookType.bookinfo_set.first().bookName)
+
+    context_value = {"title": "圖書列表"}
+    return render(request, 'book/List.html', context=context_value)
+
+def preAdd(request):
+
+    bookTypeList =  BookTypeInfo.objects.all()
+    print(bookTypeList)
+    context_value = {"title" : "圖書添加" ,"bookTypeList":bookTypeList}
+    return render(request, "book/add.html", context_value)
+
+def preUpdate(request,id):
+    print("id:",id)
+    book = BookInfo.objects.get(id=id)
+    print(book.bookName)
+
+    bookTypeList = BookTypeInfo.objects.all()
+    print(bookTypeList)
+    context_value = {"title": "圖書修改", "bookTypeList": bookTypeList, "book":book}
+    return render(request, "book/edit.html", context_value)
+
+def add(request):
+    # print(request.POST.get("bookName"))
+    # print(request.POST.get("price"))
+    # print(request.POST.get("publishDate"))
+    # print(request.POST.get("bookType_id"))
+    book = BookInfo()
+    book.bookName = request.POST.get("bookName")
+    book.price = request.POST.get("price")
+    book.publishDate = request.POST.get("publishDate")
+    book.bookType_id = request.POST.get("bookType_id")
+    book.save()
+    print("id:",book.id)
+    return bookList(request)
+
+def update(request):
+    book = BookInfo()
+    book.id = request.POST.get("id")
+    book.bookName = request.POST.get("bookName")
+    book.price = request.POST.get("price")
+    book.publishDate = request.POST.get("publishDate")
+    book.bookType_id = request.POST.get("bookType_id")
+    book.save()
+    return bookList(request)
+
+def delete(request,id):
+    BookInfo.objects.get(id=id).delete()
+    # BookInfo.objects.filter(price__gte=90).delete()
+    return bookList(request)
+
+@transaction.atomic
+def transfer2(request):
+    # 開啓事務
+    sid = transaction.savepoint()
+    try:
+        a1 = AccountInfo.objects.filter(user='baka9')
+        a1.update(account=F('account') + 100)
+
+        a2 = AccountInfo.objects.filter(user='baqkan')
+        a2.update(account=F('account') - 100)
+
+        #提交事務
+        transaction.savepoint_commit(sid)
+    except Exception as e:
+        print("異常信息：",e)
+        transaction.savepoint_rollback(sid)
+
+    return HttpResponse("transfer ok")
+
