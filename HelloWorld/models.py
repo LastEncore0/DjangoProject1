@@ -22,10 +22,10 @@ class BookTypeInfo(models.Model):
 
 class BookInfo(models.Model):
     id = models.AutoField(primary_key=True)
-    bookName = models.CharField(max_length=20)
-    publishDate = models.DateField()
-    price = models.FloatField()
-    bookType = models.ForeignKey(BookTypeInfo, on_delete=models.Prefetch)
+    bookName = models.CharField(max_length=20,verbose_name='書名')
+    publishDate = models.DateField(verbose_name='出版日期')
+    price = models.FloatField(verbose_name='價格')
+    bookType = models.ForeignKey(BookTypeInfo, on_delete=models.Prefetch,verbose_name='類別')
 
     class Meta:
         db_table = 't_book'
