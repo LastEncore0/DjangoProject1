@@ -54,6 +54,14 @@ urlpatterns = [
     path('order/', include(('order.urls', 'user'), namespace='order')),
     path('redirectTo', RedirectView.as_view(url='index/')),
     path('blog/<int:id>', HelloWorld.views.blog),
+    # Auth
+    path('authtoLogin/',HelloWorld.views.authto_login),
+    path('auth/login',HelloWorld.views.authlogin),
+    path('auth/setPwd',HelloWorld.views.setPwd),
+    path('auth/logout',HelloWorld.views.logout),
+    path('auth/index',HelloWorld.views.to_index),
+    path('toRegister/', HelloWorld.views.to_register),
+    path('auth/register', HelloWorld.views.register),
     path('blog2/<int:year>/<int:month>/<int:day>/<int:id>', HelloWorld.views.blog2),
     re_path('blog3/(?P<year>[0-9]{4})/(?P<month>[0-9]{2})/(?P<day>[0-9]{2})',HelloWorld.views.blog3),
     re_path('media/(?P<path>.*)', serve, {'document_root': settings.MEDIA_ROOT},name='media')

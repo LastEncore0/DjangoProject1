@@ -1,6 +1,8 @@
 import os
 import datetime
 
+from django.contrib import auth
+from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.db import connection, transaction
 from django.db.backends.utils import CursorDebugWrapper
@@ -247,6 +249,58 @@ def delete(request,id):
     BookInfo.objects.get(id=id).delete()
     # BookInfo.objects.filter(price__gte=90).delete()
     return bookList(request)
+
+def to_register(request):
+    return render(request,'auth/register.html')
+
+def register(request):
+    username = request.POST.get("username")
+    password = request.POST.get("password")
+    #檢測用戶名是否存在
+    result = User.objects.filter(username=username)
+    if result:
+        return render(request,'auth/register.html',context={"errorfinfo":"該用戶名已存在"})
+    User.objects.create_user(username=username,password=password)
+    return render(request,'auth/login.html')
+
+def authto_login(request):
+    return render(request,'auth/login.html')
+
+def authlogin(request):
+    username = request.POST.get("username")
+    password = request.POST.get("password")
+    resUser = auth.authenticate( request,username=username,password=password)
+    if resUser and resUser.is_active:
+        print(resUser, type(resUser))
+    # 用户登录成功之后（返回给客户端登录的凭证或者说是令牌、随机字符串）
+        auth.login(request, resUser)
+        return render(request, 'auth/index.html')
+    else:
+        return render(request, 'auth/login.html',
+                  context={"errorInfo": "用户名或者密码错误", "username":
+                      username, "password": password})
+
+def logout(request):
+    auth.logout(request)
+    return render(request,'auth/index.html')
+
+def to_index(request):
+
+    return render(request,'auth/index.html')
+
+def setPwd(request):
+
+    if request.method == "POST":
+        oldPwd = request.POST.get("oldPwd")
+        newPwd = request.POST.get("newPwd")
+        isRight = request.user.check_password(oldPwd)
+        if not isRight:
+            return render(request,'auth/setPwd.html',
+                          context={"errorfinfo": "原密码错误","newPwd":newPwd})
+        request.user.set_password(newPwd)
+        request.user.save()
+        return render(request,'auth/index.html')
+    return render(request,'auth/setPwd.html')
 
 @transaction.atomic
 def transfer2(request):
