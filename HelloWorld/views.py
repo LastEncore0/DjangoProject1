@@ -23,6 +23,7 @@ class Person:
         self.age = age
 
 # Create your views here.
+# ホームページのリクエスト(request)を処理し、レスポンス(response)を返す
 def index(request):
     print("request.GET")
     str = "hello world"
@@ -33,7 +34,7 @@ def index(request):
     myTuple = (10,"原p",3.14,40,False)
     context_value = {"msg":str, "msg2":myDict, "msg3":baka0, "msg4":myList, "msg5":myTuple, "date":date}
 
-    return render(request,'index2.html', context=context_value)
+    return render(request,'index.html', context=context_value)
 def blog(request, id):
     if id == 0:
         return redirect("/s1/error.html")

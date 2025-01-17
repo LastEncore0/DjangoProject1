@@ -6,6 +6,7 @@
 </head>
 <body>
 主頁
+
 {% if request.user.is_authenticated %}
     {{ request.user }}
 	<a href="/auth/logout">注銷</a>
