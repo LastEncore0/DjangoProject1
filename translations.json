@@ -1,11 +1,14 @@
 {
     "ja": {
         "hello": "こんにちは、世界！",
-        "mbti": "性格テスト"
+        "mbti": "性格テスト",
+        "Navbar": "ホームページ",
+        "book": "本の一覧表"
     },
     "en": {
         "hello": "Hello, world!",
-        "mbti": "Personality Test"
+        "mbti": "Personality Test",
+        "book": "Book List"
     },
     "zh-hans": {
         "hello": "你好，世界！",

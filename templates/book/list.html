@@ -1,3 +1,4 @@
+{% extends "base2.html" %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,7 +6,9 @@
     <title>{{ title }}</title>
 </head>
 <body>
-<h3>{{ title }}</h3>
+
+{% block content %}
+    <h3>{{ title }}</h3>
 <a href="/book/preAdd">添加</a><br/><br/>
 <a href="/book/preAdd2">添加2(Form)</a><br/><br/>
 <a href="/book/preAdd3">添加3(ModelForm)</a><br/><br/>
@@ -32,5 +35,8 @@
         </tr>
     {% endfor %}
 </table>
+
+{% endblock %}
+
 </body>
 </html>

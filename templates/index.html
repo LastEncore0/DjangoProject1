@@ -1,16 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-
-</head>
-<body>
 {% extends "base2.html" %}
+
 {% block content %}
     <h1>{{ hello }}</h1>
-    <a href="https://gespenst-zero.firebaseapp.com/?load&lang=ja" target="_blank">{{ mbti }}</a>
-{% endblock %}
 
-</body>
-</html>
+    <a href="{% url 'book' %}" target="_blank">{{ book }}</a>
+    <a href="https://gespenst-zero.firebaseapp.com/?load&lang=ja" target="_blank">{{ mbti }}</a><br>
+    <h2 class="mt-5">📂 选择文件夹并转换图片格式</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            {{ form.source_folder.label_tag }}
+            {{ form.source_folder }}
+        </div>
+        <div class="mb-3">
+            {{ form.target_folder.label_tag }}
+            {{ form.target_folder }}
+        </div>
+        <div class="mb-3">
+            {{ form.output_format.label_tag }}
+            {{ form.output_format }}
+        </div>
+        <button type="submit" class="btn btn-primary">🚀 开始转换</button>
+    </form>
+{#    {% if logs %}#}
+{#        <script>#}
+{#            window.onload = function () {#}
+{#                let logMessages = `{% for log in logs %}{{ log }}\n{% endfor %}`;#}
+{#                alert(logMessages);#}
+{#            };#}
+{#        </script>#}
+{#    {% endif %}#}
+{% endblock %}

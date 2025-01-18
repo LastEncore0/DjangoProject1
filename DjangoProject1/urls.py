@@ -26,7 +26,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('set_language/', HelloWorld.views.set_language, name='set_language'),
     # nameはURLの名前を付け、テンプレートやコード内でのURLを参照やすいするためのもの
-    path('', HelloWorld.views.index, name='index'),
+    path('', HelloWorld.views.index, name='home'),
     path('download1/', HelloWorld.views.download_file1),
     path('download2/', HelloWorld.views.download_file2),
     path('download3/', HelloWorld.views.download_file3),
@@ -34,7 +34,7 @@ urlpatterns = [
     path('post', HelloWorld.views.post_test),
     path('tologin/', HelloWorld.views.to_login),
     path('tocourse/', HelloWorld.views.to_course),
-    path('book/list', HelloWorld.views.bookList),
+    path('book/list', HelloWorld.views.bookList, name='book'),
     path('book/list2', HelloWorld.views.bookList2),
     path('book/preAdd', HelloWorld.views.preAdd),
     path('book/preAdd2', HelloWorld.views.preAdd2),
@@ -64,6 +64,7 @@ urlpatterns = [
     path('auth/index',HelloWorld.views.to_index),
     path('toRegister/', HelloWorld.views.to_register),
     path('auth/register', HelloWorld.views.register),
+    path("", HelloWorld.views.convert_images_view, name="convert_images"),
     path('blog2/<int:year>/<int:month>/<int:day>/<int:id>', HelloWorld.views.blog2),
     re_path('blog3/(?P<year>[0-9]{4})/(?P<month>[0-9]{2})/(?P<day>[0-9]{2})',HelloWorld.views.blog3),
     re_path('media/(?P<path>.*)', serve, {'document_root': settings.MEDIA_ROOT},name='media')

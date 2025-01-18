@@ -14,7 +14,7 @@ from django.utils.translation import get_language, activate
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from DjangoProject1 import settings
-from HelloWorld.forms import StudentForm, BookInfoForm, BookInfoModelForm
+from HelloWorld.forms import StudentForm, BookInfoForm, BookInfoModelForm, ImageConversionForm
 from HelloWorld.models import StudentInfo, BookInfo, BookTypeInfo, AccountInfo
 
 
@@ -38,28 +38,65 @@ def set_language(request):
         lang = "ja"
 
     activate(lang)  # 新しい言語に切り替わる
+    print("Language:", lang)
     response = redirect(request.META.get("HTTP_REFERER", "/"))  # 重定向回前一个页面
     response.set_cookie("django_language", lang)  # 设置 cookie，记住语言
+    print("Cookie:", response.cookies)
     return response
 
 # 翻訳Jsonを読み取る
 with open("translations.json", encoding="utf-8") as f:
     translations = json.load(f)
 
+def get_translated_text(lang, key):
+    """  获取翻译内容，如果不存在则使用日语（ja） """
+    return translations.get(lang, {}).get(key, translations["ja"].get(key, key))
+
+
 # Create your views here.
 # ホームページのリクエスト(request)を処理し、レスポンス(response)を返す
 def index(request):
-    lang = get_current_language()
 
+    lang = get_current_language()
     # コンテキストに翻訳文字列を追加
     context_value = {
-        "hello": translations[lang]["hello"],
-        "mbti": translations[lang]["mbti"],
+        "hello": get_translated_text(lang, "hello"),
+        "mbti": get_translated_text(lang, "mbti"),
+        "Navbar": get_translated_text(lang, "Navbar"),
+        "book": get_translated_text(lang, "book"),
         # "footer": footer,
         "date": datetime.datetime.now()
     }
 
-    return render(request, 'index.html', context=context_value)
+    if request.method == "POST":
+        form = ImageConversionForm(request.POST)
+        if form.is_valid():
+            conversion = form.save()
+            logs = conversion.convert_images()
+            context_value.update({"form": form, "logs": logs})
+            return render(request, "index.html", context_value)
+
+    else:
+        form = ImageConversionForm()  # ✅ 确保 GET 请求也有 `form`
+    context_value["form"] = form
+    return render(request, "index.html", context_value)
+
+def convert_images_view(request):
+    print('convert_images_view:')
+    logs = []
+
+    if request.method == "POST":
+        form = ImageConversionForm(request.POST)
+        if form.is_valid():
+            conversion = form.save()
+            logs = conversion.convert_images()  # ✅ 运行转换逻辑
+            return render(request, "index.html", {"form": form, "logs": logs})
+
+    else:
+        form = ImageConversionForm()  # ✅ 确保 GET 请求也有 `form`
+
+    return render(request, "index.html", {"form": form})
+
 def blog(request, id):
     if id == 0:
         return redirect("/s1/error.html")
@@ -186,6 +223,7 @@ def to_course(request):
     return render(request, 'course.html')
 
 def bookList(request):
+    lang = get_current_language()
     bookList = BookInfo.objects.all()
 
     # bookList = BookInfo.objects.raw("select * from t_book where price>%s",params=[10])
@@ -202,7 +240,11 @@ def bookList(request):
     p = Paginator(bookList,2)
     bookListPage = p.page(1)
     print("縂記錄數" ,BookInfo.objects.count())
-    context_value = {"title" : "圖書列表" ,"bookList":bookList}
+    context_value = {
+        "title" : "圖書列表" ,
+        "bookList":bookList,
+        "Navbar": get_translated_text(lang, "Navbar"),
+    }
     return render(request, 'book/List.html', context=context_value)
 
 def bookList2(request):
@@ -327,6 +369,7 @@ def setPwd(request):
         request.user.save()
         return render(request,'auth/index.html')
     return render(request,'auth/setPwd.html')
+
 
 @transaction.atomic
 def transfer2(request):

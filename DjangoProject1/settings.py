@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'HelloWorld.apps.HelloworldConfig',
     'user.apps.UserConfig',
-    'order.apps.OrderConfig'
+    'order.apps.OrderConfig',
+    'image_converter.apps.ImageConverterConfig'
 ]
 
 MIDDLEWARE = [

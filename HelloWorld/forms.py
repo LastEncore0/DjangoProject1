@@ -2,7 +2,7 @@ from django import forms
 from django.forms import ModelForm, Form, widgets
 from django.forms.formsets import formset_factory
 
-from HelloWorld.models import StudentInfo, BookTypeInfo, BookInfo
+from HelloWorld.models import StudentInfo, BookTypeInfo, BookInfo, ImageConversion
 
 
 class StudentForm(ModelForm):
@@ -53,3 +53,24 @@ class BookInfoForm(Form):
     # 图书类别以下拉框形式显示，下拉框选项id是图书类别Id，下拉框选项文本是图书类别名称
     choices =[(v['id'], v['bookTypeName']) for v, v in  enumerate(bookTypeList)]
     bookType_id = forms.ChoiceField(choices=choices , label="圖書類別")
+
+class ImageConversionForm(forms.ModelForm):
+    """  用户选择文件夹 & 转换格式的表单 """
+    class Meta:
+        model = ImageConversion
+        fields = ["source_folder", "target_folder", "output_format"]
+
+    source_folder = forms.CharField(
+        label="源文件夹",
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "选择源文件夹"}),
+    )
+    target_folder = forms.CharField(
+        label="目标文件夹（可选）",
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "默认保存到源文件夹"}),
+    )
+    output_format = forms.ChoiceField(
+        label="转换格式",
+        choices=ImageConversion._meta.get_field("output_format").choices,
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
