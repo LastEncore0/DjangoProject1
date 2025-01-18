@@ -3,9 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
 </head>
 <body>
-<p>Hello Django</p>
-<a href="https://gespenst-zero.firebaseapp.com/?load&lang=ja" target="_blank">Python</a>
+{% extends "base2.html" %}
+{% block content %}
+    <h1>{{ hello }}</h1>
+    <a href="https://gespenst-zero.firebaseapp.com/?load&lang=ja" target="_blank">{{ mbti }}</a>
+{% endblock %}
+
 </body>
 </html>

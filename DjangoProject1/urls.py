@@ -24,6 +24,7 @@ from DjangoProject1 import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('set_language/', HelloWorld.views.set_language, name='set_language'),
     # nameはURLの名前を付け、テンプレートやコード内でのURLを参照やすいするためのもの
     path('', HelloWorld.views.index, name='index'),
     path('download1/', HelloWorld.views.download_file1),

@@ -1,0 +1,14 @@
+{
+    "ja": {
+        "hello": "こんにちは、世界！",
+        "mbti": "性格テスト"
+    },
+    "en": {
+        "hello": "Hello, world!",
+        "mbti": "Personality Test"
+    },
+    "zh-hans": {
+        "hello": "你好，世界！",
+        "mbti": "人格測試"
+    }
+}

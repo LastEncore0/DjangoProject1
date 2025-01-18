@@ -1,3 +1,4 @@
+import json
 import os
 import datetime
 
@@ -9,8 +10,10 @@ from django.db.backends.utils import CursorDebugWrapper
 from django.db.models import Sum, F
 from django.http import HttpResponse, StreamingHttpResponse, FileResponse
 from django.shortcuts import render, redirect
+from django.utils.translation import get_language, activate
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
+from DjangoProject1 import settings
 from HelloWorld.forms import StudentForm, BookInfoForm, BookInfoModelForm
 from HelloWorld.models import StudentInfo, BookInfo, BookTypeInfo, AccountInfo
 
@@ -22,19 +25,41 @@ class Person:
         self.name = name
         self.age = age
 
+def get_current_language():
+    """ 現在の言語を取得し、存在しない場合はデフォルト (ja) に設定する """
+    lang = get_language()
+    if lang not in ["ja", "en", "zh-hans"]:  # 定義済みの言語リスト
+        lang = "ja"  # デフォルトは日本語
+    return lang
+
+def set_language(request):
+    lang = request.GET.get("lang", "ja")
+    if lang not in ["ja", "en", "zh-hans"]:
+        lang = "ja"
+
+    activate(lang)  # 新しい言語に切り替わる
+    response = redirect(request.META.get("HTTP_REFERER", "/"))  # 重定向回前一个页面
+    response.set_cookie("django_language", lang)  # 设置 cookie，记住语言
+    return response
+
+# 翻訳Jsonを読み取る
+with open("translations.json", encoding="utf-8") as f:
+    translations = json.load(f)
+
 # Create your views here.
 # ホームページのリクエスト(request)を処理し、レスポンス(response)を返す
 def index(request):
-    print("request.GET")
-    str = "hello world"
-    date = datetime.datetime.now()
-    baka0 = Person("baka0", 18)
-    myDict = {"tom": '666', 'cat': '999', 'wzw': '333'}
-    myList = [1,2,3,4,5]
-    myTuple = (10,"原p",3.14,40,False)
-    context_value = {"msg":str, "msg2":myDict, "msg3":baka0, "msg4":myList, "msg5":myTuple, "date":date}
+    lang = get_current_language()
 
-    return render(request,'index.html', context=context_value)
+    # コンテキストに翻訳文字列を追加
+    context_value = {
+        "hello": translations[lang]["hello"],
+        "mbti": translations[lang]["mbti"],
+        # "footer": footer,
+        "date": datetime.datetime.now()
+    }
+
+    return render(request, 'index.html', context=context_value)
 def blog(request, id):
     if id == 0:
         return redirect("/s1/error.html")
