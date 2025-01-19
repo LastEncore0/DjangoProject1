@@ -1,5 +1,11 @@
 {% extends "base2.html" %}
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+</head>
+<body>
 {% block content %}
     <h1>{{ hello }}</h1>
 
@@ -8,14 +14,21 @@
     <h2 class="mt-5">📂 选择文件夹并转换图片格式</h2>
     <form method="post">
         {% csrf_token %}
-        <div class="mb-3">
-            {{ form.source_folder.label_tag }}
-            {{ form.source_folder }}
+       <div class="mb-3">
+        <label for="source-folder">📂 源文件夹</label>
+        <div class="input-group">
+            <input type="text" name="source_folder" id="source-folder" class="form-control" placeholder="手动输入或点击按钮选择文件夹">
+            <button type="button" onclick="selectFolder('source-folder')" class="btn btn-primary">选择</button>
         </div>
-        <div class="mb-3">
-            {{ form.target_folder.label_tag }}
-            {{ form.target_folder }}
+    </div>
+
+    <div class="mb-3">
+        <label for="target-folder">📂 目标文件夹（可选）</label>
+        <div class="input-group">
+            <input type="text" name="target_folder" id="target-folder" class="form-control" placeholder="手动输入或点击按钮选择文件夹">
+            <button type="button" onclick="selectFolder('target-folder')" class="btn btn-primary">选择</button>
         </div>
+    </div>
         <div class="mb-3">
             {{ form.output_format.label_tag }}
             {{ form.output_format }}
@@ -31,3 +44,5 @@
 {#        </script>#}
 {#    {% endif %}#}
 {% endblock %}
+</body>
+</html>

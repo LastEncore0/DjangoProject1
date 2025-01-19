@@ -45,7 +45,6 @@ class AccountInfo(models.Model):
 
 
 class ImageConversion(models.Model):
-    """ 🌍 处理图片格式转换的 Django 模型 """
 
     source_folder = models.CharField(max_length=500, verbose_name="源文件夹")  # 用户选择的源文件夹
     target_folder = models.CharField(max_length=500, blank=True, verbose_name="目标文件夹")  # 目标文件夹（可选）
