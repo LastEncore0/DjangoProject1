@@ -58,6 +58,8 @@ def get_translated_text(lang, key):
 def index(request):
 
     lang = get_current_language()
+    print("Request Method:")
+
     # コンテキストに翻訳文字列を追加
     context_value = {
         "hello": get_translated_text(lang, "hello"),
@@ -69,6 +71,7 @@ def index(request):
     }
 
     if request.method == "POST":
+        print("Received POST with data:", request.POST)
         form = ImageConversionForm(request.POST)
         if form.is_valid():
             conversion = form.save()
@@ -77,25 +80,10 @@ def index(request):
             return render(request, "index.html", context_value)
 
     else:
-        form = ImageConversionForm()  # ✅ 确保 GET 请求也有 `form`
+        form = ImageConversionForm()  # 确保 GET 请求也有 `form`
     context_value["form"] = form
+    print("context_value:",context_value)
     return render(request, "index.html", context_value)
-
-def convert_images_view(request):
-    print('convert_images_view:')
-    logs = []
-
-    if request.method == "POST":
-        form = ImageConversionForm(request.POST)
-        if form.is_valid():
-            conversion = form.save()
-            logs = conversion.convert_images()  # ✅ 运行转换逻辑
-            return render(request, "index.html", {"form": form, "logs": logs})
-
-    else:
-        form = ImageConversionForm()  # ✅ 确保 GET 请求也有 `form`
-
-    return render(request, "index.html", {"form": form})
 
 def blog(request, id):
     if id == 0:
@@ -108,7 +96,7 @@ def blog3(request, year, month, day):
     return HttpResponse(str(year) + '/' + str(month) + '/' + str(day))
 
 # 定義文件路徑
-file_path = "E:\\ae files\example.zip"
+file_path = r"E:\ae files\example.zip"
 
 def download_file1(request):
     file = open(file_path, 'rb') #打開文件
@@ -175,7 +163,7 @@ def upload(request):
     myFile = request.FILES.get("myfile",None)
     if myFile:
         # 打開特定的文件進行二進制操作
-        f=open(os.path.join("F:\\code\DjangoProject1\myFile",myFile.name),"wb+")
+        f=open(os.path.join(r"F:\code\DjangoProject1\myFile",myFile.name),"wb+")
         # 分塊寫入文件
         for chunk in myFile.chunks():
             f.write(chunk)

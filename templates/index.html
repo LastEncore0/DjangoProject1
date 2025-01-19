@@ -11,38 +11,50 @@
 
     <a href="{% url 'book' %}" target="_blank">{{ book }}</a>
     <a href="https://gespenst-zero.firebaseapp.com/?load&lang=ja" target="_blank">{{ mbti }}</a><br>
-    <h2 class="mt-5">📂 选择文件夹并转换图片格式</h2>
-    <form method="post">
-        {% csrf_token %}
-       <div class="mb-3">
-        <label for="source-folder">📂 源文件夹</label>
-        <div class="input-group">
-            <input type="text" name="source_folder" id="source-folder" class="form-control" placeholder="手动输入或点击按钮选择文件夹">
-            <button type="button" onclick="selectFolder('source-folder')" class="btn btn-primary">选择</button>
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <div class="card">
+                    <div class="card-header bg-primary text-white text-center">
+                        📂 文件夹选择
+                    </div>
+                    <div class="card-body">
+                        <!-- カードの中身　 -->
+                        <form method="post" action="{% url 'home' %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                {{ form.source_folder.label_tag }}
+                                {{ form.source_folder }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form.target_folder.label_tag }}
+                                {{ form.target_folder }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form.output_format.label_tag }}
+                                {{ form.output_format }}
+                            </div>
+
+                            <div class="card-footer text-center">
+                                <button type="submit" class="btn btn-success btn-block">
+                                    🚀 开始转换
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="mb-3">
-        <label for="target-folder">📂 目标文件夹（可选）</label>
-        <div class="input-group">
-            <input type="text" name="target_folder" id="target-folder" class="form-control" placeholder="手动输入或点击按钮选择文件夹">
-            <button type="button" onclick="selectFolder('target-folder')" class="btn btn-primary">选择</button>
-        </div>
-    </div>
-        <div class="mb-3">
-            {{ form.output_format.label_tag }}
-            {{ form.output_format }}
-        </div>
-        <button type="submit" class="btn btn-primary">🚀 开始转换</button>
-    </form>
-{#    {% if logs %}#}
-{#        <script>#}
-{#            window.onload = function () {#}
-{#                let logMessages = `{% for log in logs %}{{ log }}\n{% endfor %}`;#}
-{#                alert(logMessages);#}
-{#            };#}
-{#        </script>#}
-{#    {% endif %}#}
+    {#    {% if logs %}#}
+    {#        <script>#}
+    {#            window.onload = function () {#}
+    {#                let logMessages = `{% for log in logs %}{{ log }}\n{% endfor %}`;#}
+    {#                alert(logMessages);#}
+    {#            };#}
+    {#        </script>#}
+    {#    {% endif %}#}
 {% endblock %}
 </body>
 </html>

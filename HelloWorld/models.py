@@ -65,7 +65,6 @@ class ImageConversion(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def convert_images(self):
-        """ 🚀 执行图片格式转换 """
         source_folder = self.source_folder
         target_folder = self.target_folder or source_folder  # 默认保存到原文件夹
         os.makedirs(target_folder, exist_ok=True)

@@ -1,4 +1,7 @@
 from django import forms
+import os
+
+from django import forms
 from django.forms import ModelForm, Form, widgets
 from django.forms.formsets import formset_factory
 
@@ -62,29 +65,24 @@ class ImageConversionForm(forms.ModelForm):
 
     source_folder = forms.CharField(
         label="源文件夹",
-        path="C:/",  #  起始路径，可以修改为特定目录
-        allow_folders=True,
-        allow_files=False,
-        widget=forms.TextInput(attrs={
-            "class": "form-control",
-            "id": "source-folder",
-            "placeholder": "手动输入或点击选择文件夹",
-        }),
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "选择源文件夹"}),
     )
     target_folder = forms.CharField(
         label="目标文件夹（可选）",
-        path=" C:/",  # 也可以设置为 "/home" 或 "C:/Users"
-        allow_folders=True,
-        allow_files=False,
         required=False,
-        widget=forms.TextInput(attrs={
-            "class": "form-control",
-            "id": "target-folder",
-            "placeholder": "默认保存到源文件夹",
-        }),
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "默认保存到源文件夹"}),
     )
     output_format = forms.ChoiceField(
         label="转换格式",
         choices=ImageConversion._meta.get_field("output_format").choices,
         widget=forms.Select(attrs={"class": "form-control"}),
     )
+
+def get_folder_choices(path):
+    try:
+        return [(os.path.join(path, folder), folder) for folder in os.listdir(path) if
+                os.path.isdir(os.path.join(path, folder))]
+    except FileNotFoundError:
+        return []
+
+
