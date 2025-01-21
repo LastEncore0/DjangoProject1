@@ -10,10 +10,10 @@ from django.db.backends.utils import CursorDebugWrapper
 from django.db.models import Sum, F
 from django.http import HttpResponse, StreamingHttpResponse, FileResponse
 from django.shortcuts import render, redirect
-from django.utils.translation import get_language, activate
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from DjangoProject1 import settings
+from HelloWorld import utils
 from HelloWorld.forms import StudentForm, BookInfoForm, BookInfoModelForm, ImageConversionForm
 from HelloWorld.models import StudentInfo, BookInfo, BookTypeInfo, AccountInfo
 
@@ -25,48 +25,27 @@ class Person:
         self.name = name
         self.age = age
 
-def get_current_language():
-    """ 現在の言語を取得し、存在しない場合はデフォルト (ja) に設定する """
-    lang = get_language()
-    if lang not in ["ja", "en", "zh-hans"]:  # 定義済みの言語リスト
-        lang = "ja"  # デフォルトは日本語
-    return lang
-
-def set_language(request):
-    lang = request.GET.get("lang", "ja")
-    if lang not in ["ja", "en", "zh-hans"]:
-        lang = "ja"
-
-    activate(lang)  # 新しい言語に切り替わる
-    print("Language:", lang)
-    response = redirect(request.META.get("HTTP_REFERER", "/"))  # 重定向回前一个页面
-    response.set_cookie("django_language", lang)  # 设置 cookie，记住语言
-    print("Cookie:", response.cookies)
-    return response
-
-# 翻訳Jsonを読み取る
-with open("translations.json", encoding="utf-8") as f:
-    translations = json.load(f)
-
-def get_translated_text(lang, key):
-    """  获取翻译内容，如果不存在则使用日语（ja） """
-    return translations.get(lang, {}).get(key, translations["ja"].get(key, key))
-
-
 # Create your views here.
 # ホームページのリクエスト(request)を処理し、レスポンス(response)を返す
 def index(request):
-
-    lang = get_current_language()
+    logs = []
+    lang = utils.get_current_language()
     print("Request Method:")
 
     # コンテキストに翻訳文字列を追加
     context_value = {
-        "hello": get_translated_text(lang, "hello"),
-        "mbti": get_translated_text(lang, "mbti"),
-        "Navbar": get_translated_text(lang, "Navbar"),
-        "book": get_translated_text(lang, "book"),
+        "logs": logs,
+        "hello": utils.get_translated_text(lang, "hello"),
+        "mbti": utils.get_translated_text(lang, "mbti"),
+        "Navbar": utils.get_translated_text(lang, "Navbar"),
+        "book": utils.get_translated_text(lang, "book"),
+        "File_selector": utils.get_translated_text(lang, "File_selector"),
+        "transfer": utils.get_translated_text(lang, "transfer"),
+        "admin": utils.get_translated_text(lang, "admin"),
+        "Information_Output": utils.get_translated_text(lang, "Information_Output"),
+        "no_Output": utils.get_translated_text(lang, "no_Output"),
         # "footer": footer,
+        "personality": utils.get_translated_text(lang, "personality"),
         "date": datetime.datetime.now()
     }
 
@@ -82,7 +61,6 @@ def index(request):
     else:
         form = ImageConversionForm()  # 确保 GET 请求也有 `form`
     context_value["form"] = form
-    print("context_value:",context_value)
     return render(request, "index.html", context_value)
 
 def blog(request, id):
@@ -99,21 +77,21 @@ def blog3(request, year, month, day):
 file_path = r"E:\ae files\example.zip"
 
 def download_file1(request):
-    file = open(file_path, 'rb') #打開文件
+    file = open(file_path, 'rb')
     response = HttpResponse(file)
     response['Content_Type'] = 'application/octet-stream'
     response['Content-Disposition'] = 'attachment;filename=file1.zip'
     return response
 
 def download_file2(request):
-    file = open(file_path, 'rb') #打開文件
+    file = open(file_path, 'rb')
     response = StreamingHttpResponse(file)
     response['Content_Type'] = 'application/octet-stream'
     response['Content-Disposition'] = 'attachment;filename=file2.zip'
     return response
 
 def download_file3(request):
-    file = open(file_path, 'rb') #打開文件
+    file = open(file_path, 'rb')
     response = FileResponse(file)
     response['Content_Type'] = 'application/octet-stream'
     response['Content-Disposition'] = 'attachment;filename=file3.zip'
@@ -121,12 +99,12 @@ def download_file3(request):
 
 def get_test(request):
     print(request.method)
-    # 常用属性
+    # 属性
     print(request.content_type)
     print(request.content_params)
     print(request.COOKIES)
     print(request.scheme)
-    # 常用方法
+    # メソッド
     print(request.is_secure())
     print(request.get_host())
     print(request.get_full_path())
@@ -162,9 +140,9 @@ def to_upload(request):
 def upload(request):
     myFile = request.FILES.get("myfile",None)
     if myFile:
-        # 打開特定的文件進行二進制操作
+        # 特定のフォルダにバイナリモードでファイルを開く
         f=open(os.path.join(r"F:\code\DjangoProject1\myFile",myFile.name),"wb+")
-        # 分塊寫入文件
+        # ファイルをチャンクごとに書き込む
         for chunk in myFile.chunks():
             f.write(chunk)
         f.close()
@@ -172,6 +150,7 @@ def upload(request):
     else:
         return HttpResponse("no file for upload!")
 
+#  学生リストを表示（ページネーション付き）
 class List(ListView):
     template_name = "student/list.html"
     extra_context = {"title":"Students List"}
@@ -179,6 +158,7 @@ class List(ListView):
     paginate_by = 5
     context_object_name = "student_list"
 
+#  学生の詳細を表示
 class Detail(DetailView):
     template_name = "student/detail.html"
     extra_context = {"title": "Students Detail"}
@@ -186,6 +166,7 @@ class Detail(DetailView):
     context_object_name = "student"
     pk_url_kwarg = "id"
 
+# 学生情報の更新
 class Update(UpdateView):
     template_name = 'student/update.html'
     extra_context = {"title": "Update Student infomation"}
@@ -193,6 +174,7 @@ class Update(UpdateView):
     form_class = StudentForm
     success_url = "/student/list"
 
+# 新しい学生情報を作成
 class Create(CreateView):
     template_name = 'student/create.html'
 
@@ -200,6 +182,7 @@ class Create(CreateView):
     form_class = StudentForm
     success_url = "/student/list"
 
+#  学生情報を削除
 class Delete(DeleteView):
     template_name = 'student/delete.html'
     extra_context = {"title": "Delete Student infomation"}
@@ -210,8 +193,9 @@ class Delete(DeleteView):
 def to_course(request):
     return render(request, 'course.html')
 
+#  書籍リストを表示
 def bookList(request):
-    lang = get_current_language()
+    lang = utils.get_current_language()
     bookList = BookInfo.objects.all()
 
     # bookList = BookInfo.objects.raw("select * from t_book where price>%s",params=[10])
@@ -227,11 +211,11 @@ def bookList(request):
     # print(r)
     p = Paginator(bookList,2)
     bookListPage = p.page(1)
-    print("縂記錄數" ,BookInfo.objects.count())
+    print("総記錄数" ,BookInfo.objects.count())
     context_value = {
-        "title" : "圖書列表" ,
+        "title" : "書籍リスト" ,
         "bookList":bookList,
-        "Navbar": get_translated_text(lang, "Navbar"),
+        "Navbar": utils.get_translated_text(lang, "Navbar"),
     }
     return render(request, 'book/List.html', context=context_value)
 
@@ -244,29 +228,29 @@ def bookList2(request):
     bookType: BookTypeInfo = BookTypeInfo.objects.filter(id=1).first()
     print(bookType.bookinfo_set.first().bookName)
 
-    context_value = {"title": "圖書列表"}
+    context_value = {"title": "書籍リスト"}
     return render(request, 'book/List.html', context=context_value)
 
 def preAdd(request):
 
     bookTypeList =  BookTypeInfo.objects.all()
     print(bookTypeList)
-    context_value = {"title" : "圖書添加" ,"bookTypeList":bookTypeList}
+    context_value = {"title" : "書籍の追加" ,"bookTypeList":bookTypeList}
     return render(request, "book/add.html", context_value)
 
 def preAdd2(request):
     form = BookInfoForm()
 
-    context_value = {"title" : "圖書添加2" ,"form": form}
+    context_value = {"title" : "書籍の追加2" ,"form": form}
     return render(request, "book/add2.html", context_value)
 
 def preAdd3(request):
     form = BookInfoModelForm()
 
-    context_value = {"title": "圖書添加3", "form": form}
+    context_value = {"title": "書籍の追加3", "form": form}
     return render(request, "book/add2.html", context_value)
 
-
+#書籍の編集
 def preUpdate(request,id):
     print("id:",id)
     book = BookInfo.objects.get(id=id)
@@ -274,7 +258,7 @@ def preUpdate(request,id):
 
     bookTypeList = BookTypeInfo.objects.all()
     print(bookTypeList)
-    context_value = {"title": "圖書修改", "bookTypeList": bookTypeList, "book":book}
+    context_value = {"title": "書籍の編集", "bookTypeList": bookTypeList, "book":book}
     return render(request, "book/edit.html", context_value)
 
 def add(request):
@@ -291,6 +275,7 @@ def add(request):
     print("id:",book.id)
     return bookList(request)
 
+#  書籍情報を更新
 def update(request):
     book = BookInfo()
     book.id = request.POST.get("id")
@@ -301,11 +286,13 @@ def update(request):
     book.save()
     return bookList(request)
 
+#  書籍を削除
 def delete(request,id):
     BookInfo.objects.get(id=id).delete()
     # BookInfo.objects.filter(price__gte=90).delete()
     return bookList(request)
 
+#  ユーザー登録ページを表示
 def to_register(request):
     return render(request,'auth/register.html')
 
@@ -315,7 +302,7 @@ def register(request):
     #檢測用戶名是否存在
     result = User.objects.filter(username=username)
     if result:
-        return render(request,'auth/register.html',context={"errorfinfo":"該用戶名已存在"})
+        return render(request,'auth/register.html',context={"errorfinfo":"このユーザー名は既に存在します"})
     User.objects.create_user(username=username,password=password)
     return render(request,'auth/login.html')
 
@@ -328,12 +315,11 @@ def authlogin(request):
     resUser = auth.authenticate( request,username=username,password=password)
     if resUser and resUser.is_active:
         print(resUser, type(resUser))
-    # 用户登录成功之后（返回给客户端登录的凭证或者说是令牌、随机字符串）
         auth.login(request, resUser)
         return render(request, 'auth/index.html')
     else:
         return render(request, 'auth/login.html',
-                  context={"errorInfo": "用户名或者密码错误", "username":
+                  context={"errorInfo": "ユーザー名またはパスワードが間違っています", "username":
                       username, "password": password})
 
 def logout(request):
@@ -352,7 +338,7 @@ def setPwd(request):
         isRight = request.user.check_password(oldPwd)
         if not isRight:
             return render(request,'auth/setPwd.html',
-                          context={"errorfinfo": "原密码错误","newPwd":newPwd})
+                          context={"errorfinfo": "パスワードが間違っています","newPwd":newPwd})
         request.user.set_password(newPwd)
         request.user.save()
         return render(request,'auth/index.html')
@@ -373,7 +359,7 @@ def transfer2(request):
         #提交事務
         transaction.savepoint_commit(sid)
     except Exception as e:
-        print("異常信息：",e)
+        print("エラー：",e)
         transaction.savepoint_rollback(sid)
 
     return HttpResponse("transfer ok")

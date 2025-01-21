@@ -6,37 +6,61 @@
     <title>{{ title }}</title>
 </head>
 <body>
+ {% block content %}
+    <!-- 標題部分 -->
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col text-center">
+                <h3 class="fw-bold">{{ title }}</h3>
+                <p class="text-muted">以下は書籍のリストです。</p>
+            </div>
+        </div>
 
-{% block content %}
-    <h3>{{ title }}</h3>
-<a href="/book/preAdd">添加</a><br/><br/>
-<a href="/book/preAdd2">添加2(Form)</a><br/><br/>
-<a href="/book/preAdd3">添加3(ModelForm)</a><br/><br/>
-<table border="1">
-    <tr>
-        <th>编号</th>
-        <th>图书名称</th>
-        <th>价格</th>
-        <th>出版日期</th>
-        <th>图书类别</th>
-        <th>操作</th>
-    </tr>
-    {% for book in bookList %}
-        <tr>
-            <td>{{ book.id }}</td>
-            <td>{{ book.bookName }}</td>
-            <td>{{ book.price }}</td>
-            <td>{{ book.publishDate | date:"Y-m-d"}}</td>
-            <td>{{ book.bookType.bookTypeName }}</td>
-            <td>
-                <a href="/book/preUpdate/{{ book.id }}">修改</a>
-                <a href="/book/delete/{{ book.id }}">刪除</a>
-            </td>
-        </tr>
-    {% endfor %}
-</table>
+        <!-- 追加ボタン -->
+        <div class="row mb-3">
+            <div class="col text-center">
+                <a href="/book/preAdd2" class="btn btn-primary">追加</a>
+            </div>
+        </div>
 
-{% endblock %}
+        <!-- 表格部分 -->
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <table class="table table-bordered table-striped table-hover text-center">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>番号</th>
+                            <th>書類名</th>
+                            <th>価格</th>
+                            <th>出版日</th>
+                            <th>カテゴリー</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for book in bookList %}
+                            <tr>
+                                <td>{{ book.id }}</td>
+                                <td>{{ book.bookName }}</td>
+                                <td>{{ book.price }}</td>
+                                <td>{{ book.publishDate | date:"Y-m-d"}}</td>
+                                <td>{{ book.bookType.bookTypeName }}</td>
+                                <td>
+                                    <a href="/book/preUpdate/{{ book.id }}" class="btn btn-sm btn-warning">編集</a>
+                                    <a href="/book/delete/{{ book.id }}" class="btn btn-sm btn-danger">削除</a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center">表示可能なデータがありません。</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
 
 </body>
 </html>

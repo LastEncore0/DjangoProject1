@@ -7,27 +7,36 @@
 </head>
 <body>
 {% block content %}
-    <h1>{{ hello }}</h1>
+    <h1 class="text-center">{{ hello }}</h1>
 
-    <a href="{% url 'book' %}" target="_blank">{{ book }}</a>
-    <a href="https://gespenst-zero.firebaseapp.com/?load&lang=ja" target="_blank">{{ mbti }}</a><br>
-    <div class="container mt-4">
+    <div class="container mt-3">
         <div class="row justify-content-center">
-            <div class="col-md-6 col-lg-4">
+            <div class="col-md-12 text-center">
+                <a href="{% url 'book' %}" target="_blank" class="btn btn-outline-primary btn-sm me-2">{{ book }}</a>
+                <a href="/admin/" target="_blank" class="btn btn-outline-secondary btn-sm me-2">{{ admin }}</a>
+                <a href="{{ personality }}" target="_blank" class="btn btn-outline-success btn-sm">{{ mbti }}</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <div class="row">
+            <!--  画像変換 -->
+            <div class="col-md-6 col-lg-5">
                 <div class="card">
                     <div class="card-header bg-primary text-white text-center">
-                        📂 文件夹选择
+                        📂 {{ File_selector }}
                     </div>
                     <div class="card-body">
-                        <!-- カードの中身　 -->
+                        <!-- コンテンツ -->
                         <form method="post" action="{% url 'home' %}">
                             {% csrf_token %}
                             <div class="mb-3">
-                                {{ form.source_folder.label_tag }}
+                                {{ form.source_folder.label_tag }}<br>
                                 {{ form.source_folder }}
                             </div>
                             <div class="mb-3">
-                                {{ form.target_folder.label_tag }}
+                                {{ form.target_folder.label_tag }}<br>
                                 {{ form.target_folder }}
                             </div>
                             <div class="mb-3">
@@ -35,26 +44,31 @@
                                 {{ form.output_format }}
                             </div>
 
-                            <div class="card-footer text-center">
-                                <button type="submit" class="btn btn-success btn-block">
-                                    🚀 开始转换
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-success btn-block w-100">
+                                    🚀 {{ transfer }}
                                 </button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
+
+            <!-- 出力 -->
+            <div class="col-md-6 col-lg-7">
+                <div class="card">
+                    <div class="card-header bg-secondary text-white text-center">
+                        🖨️ {{ Information_Output }}
+                    </div>
+                    <div class="card-body">
+                        <div class="output-box">
+                            <pre> {% for log in logs %}{{ log }}<br> {% endfor %}</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
-    {#    {% if logs %}#}
-    {#        <script>#}
-    {#            window.onload = function () {#}
-    {#                let logMessages = `{% for log in logs %}{{ log }}\n{% endfor %}`;#}
-    {#                alert(logMessages);#}
-    {#            };#}
-    {#        </script>#}
-    {#    {% endif %}#}
 {% endblock %}
 </body>
 </html>

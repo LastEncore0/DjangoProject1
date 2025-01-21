@@ -5,6 +5,8 @@ from django import forms
 from django.forms import ModelForm, Form, widgets
 from django.forms.formsets import formset_factory
 
+from .utils import get_current_language, get_translated_text
+from HelloWorld import utils
 from HelloWorld.models import StudentInfo, BookTypeInfo, BookInfo, ImageConversion
 
 
@@ -19,7 +21,7 @@ class StudentForm(ModelForm):
         }
 
         labels = {
-            'name':'姓名',
+            'name':'名前',
             'age':'年齡'
         }
 
@@ -33,50 +35,79 @@ class BookInfoModelForm(ModelForm):
         }
 
         labels = {
-            'bookName':'圖書名稱',
-            'price':'圖書價格',
-            'publishDate':'出版日期',
-            'bookType':'圖書類別',
+            'bookName':'書籍名',
+            'price':'書籍価格',
+            'publishDate':'出版日',
+            'bookType':'書籍カテゴリ',
         }
 
         help_texts = {
-            'bookName' : '請輸入圖書名稱'
+            'bookName' : '書籍名を入力してください'
         }
 
 class BookInfoForm(Form):
     bookName = forms.CharField(
         max_length=20,
-        label="圖書名稱",
+        label="書籍名",
         required=True,
-        widget=widgets.TextInput(attrs={'placeholder':'請輸入名稱',"class":"inputClass"})
+        widget=widgets.TextInput(attrs={'placeholder':'名前を入力して',"class":"inputClass"})
     )
-    price = forms.FloatField(label="圖書價格")
-    publishDate = forms.DateField(label="出版日期")
+    price = forms.FloatField(label="書籍価格")
+    publishDate = forms.DateField(label="出版日")
     bookTypeList = BookTypeInfo.objects.values()
-    # 图书类别以下拉框形式显示，下拉框选项id是图书类别Id，下拉框选项文本是图书类别名称
+    # 書籍カテゴリをドロップダウン形式で表示し、選択肢のidは書籍カテゴリId、それに対する選択肢のテキストは書籍カテゴリ名
     choices =[(v['id'], v['bookTypeName']) for v, v in  enumerate(bookTypeList)]
-    bookType_id = forms.ChoiceField(choices=choices , label="圖書類別")
+    bookType_id = forms.ChoiceField(choices=choices , label="カテゴリ")
 
 class ImageConversionForm(forms.ModelForm):
-    """  用户选择文件夹 & 转换格式的表单 """
+    """  ユーザーがフォルダと変換形式を選択するためのフォーム  """
     class Meta:
         model = ImageConversion
         fields = ["source_folder", "target_folder", "output_format"]
 
-    source_folder = forms.CharField(
-        label="源文件夹",
-        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "选择源文件夹"}),
-    )
-    target_folder = forms.CharField(
-        label="目标文件夹（可选）",
-        required=False,
-        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "默认保存到源文件夹"}),
-    )
-    output_format = forms.ChoiceField(
-        label="转换格式",
-        choices=ImageConversion._meta.get_field("output_format").choices,
-        widget=forms.Select(attrs={"class": "form-control"}),
-    )
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        lang = get_current_language()
+
+
+        self.fields["source_folder"].label = get_translated_text(lang, "source_folder_label")
+        self.fields["source_folder"].widget.attrs.update(
+            {
+                "class": "form-control",
+                "style": "width: 100%; max-width: 400px;"
+            }
+        )
+
+        self.fields["target_folder"].label = get_translated_text(lang, "target_folder_label")
+        self.fields["target_folder"].widget.attrs.update(
+            {
+                "placeholder": get_translated_text(lang, "default_target_folder"),
+                "class": "form-control",
+                "style": "width: 100%; max-width: 400px;"
+            }
+        )
+
+        self.fields["output_format"].label = get_translated_text(lang, "output_format_label")
+
+    # lang = utils.get_current_language()
+    # print("ImageConversionForm", lang)
+
+
+
+    # source_folder = forms.CharField(
+    #     label= utils.get_translated_text(lang, "source_folder_label"),
+    #     widget=forms.TextInput(attrs={"class": "form-control"}),
+    # )
+    # target_folder = forms.CharField(
+    #     label=utils.get_translated_text(lang, "target_folder_label"),
+    #     required=False,
+    #     widget=forms.TextInput(attrs={"class": "form-control", "placeholder": utils.get_translated_text(lang, "default_target_folder")}),
+    # )
+    # output_format = forms.ChoiceField(
+    #     label=utils.get_translated_text(lang, "output_format_label"),
+    #     choices=ImageConversion._meta.get_field("output_format").choices,
+    #     widget=forms.Select(attrs={"class": "form-control"}),
+    # )
 
 def get_folder_choices(path):
     try:
