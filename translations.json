@@ -1,6 +1,6 @@
 {
     "ja": {
-        "hello": "こんにちは、世界！",
+        "hello": "画像一括変換",
         "mbti": "性格テスト",
         "Navbar": "ホームページ",
         "book": "本の一覧表",
@@ -15,11 +15,11 @@
         "no_Output":"出力なし",
         "batch_conversion_complete": "一括変換完了！保存先：",
         "conversion_success": "変換成功：保存先",
-        "skipped": "既存しているため、スキップ：",
+        "skipped": "既存しているため、スキップ0：",
        "personality": "https://gespenst-zero.firebaseapp.com/index.html?load&lang=ja"
     },
     "en": {
-        "hello": "Hello, world!",
+        "hello": "Trans pics‘ format",
         "mbti": "Personality Test",
         "book": "Book List",
         "File_selector": "Folder Selection",
@@ -37,7 +37,7 @@
         "personality": "https://gespenst-zero.firebaseapp.com/index.html?load&lang=en"
     },
     "zh-hans": {
-        "hello": "你好，世界！",
+        "hello": "圖片批量轉換",
         "mbti": "人格測試",
         "Navbar": "回到主頁",
         "book": "圖書列表",
