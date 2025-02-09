@@ -48,16 +48,28 @@ class BookInfoModelForm(ModelForm):
 class BookInfoForm(Form):
     bookName = forms.CharField(
         max_length=20,
-        label="書籍名",
+        label="📖 書籍名",
         required=True,
-        widget=widgets.TextInput(attrs={'placeholder':'名前を入力して',"class":"inputClass"})
+        widget=widgets.TextInput(attrs={'placeholder':'名前を入力して',"class":"form-control"})
     )
-    price = forms.FloatField(label="書籍価格")
-    publishDate = forms.DateField(label="出版日")
-    bookTypeList = BookTypeInfo.objects.values()
+    price = forms.FloatField(label="💰書籍価格", widget=widgets.NumberInput(attrs={"class": "form-control", }))
+    publishDate = forms.DateField(
+        label="📅 出版日",
+        widget=widgets.DateInput(attrs={
+            "type": "date",  # 日付きセレクター
+            "class": "form-control"
+        })
+    )
     # 書籍カテゴリをドロップダウン形式で表示し、選択肢のidは書籍カテゴリId、それに対する選択肢のテキストは書籍カテゴリ名
-    choices =[(v['id'], v['bookTypeName']) for v, v in  enumerate(bookTypeList)]
-    bookType_id = forms.ChoiceField(choices=choices , label="カテゴリ")
+    bookTypeList = BookTypeInfo.objects.all().values_list("id", "bookTypeName")
+    choices = [(str(v[0]), v[1]) for v in bookTypeList]  # ✅ 确保 ID 为字符串，避免 NULL 问题
+
+    bookType_id = forms.ChoiceField(
+        choices=[('', '選択してください')] + choices,  # ✅ 增加默认空选项，避免 NULL
+        label="📂 カテゴリ",
+        required=True,  # ✅ 确保字段必填
+        widget=forms.Select(attrs={"class": "form-select"})
+    )
 
 class ImageConversionForm(forms.ModelForm):
     """  ユーザーがフォルダと変換形式を選択するためのフォーム  """

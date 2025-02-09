@@ -235,13 +235,13 @@ def preAdd(request):
 
     bookTypeList =  BookTypeInfo.objects.all()
     print(bookTypeList)
-    context_value = {"title" : "書籍の追加" ,"bookTypeList":bookTypeList}
+    context_value = {"title" : "書籍の追加1" ,"bookTypeList":bookTypeList}
     return render(request, "book/add.html", context_value)
 
 def preAdd2(request):
     form = BookInfoForm()
 
-    context_value = {"title" : "書籍の追加2" ,"form": form}
+    context_value = {"title" : "書籍の追加" ,"form": form}
     return render(request, "book/add2.html", context_value)
 
 def preAdd3(request):
